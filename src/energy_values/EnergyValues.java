@@ -37,15 +37,19 @@ class EnergyValues {
         return new Equation(a, b);
     }
 
-    static Position SelectPivotElement(double a[][], boolean used_raws[], boolean used_columns[]) {
+    static Position SelectPivotElement(double a[][], int column) {
         // This algorithm selects the first free element.
         // You'll need to improve it to pass the problem.
-        Position pivot_element = new Position(0, 0);
-        while (used_raws[pivot_element.raw])
-            ++pivot_element.raw;
-        while (used_columns[pivot_element.column])
-            ++pivot_element.column;
-        return pivot_element;
+        int free = -1;
+        for (int i = column; i < a.length; i++) {
+            if (a[i][column] != 0) {
+                free = i;
+
+                break;
+            }
+        }
+
+        return new Position(column, free);
     }
 
     static void SwapLines(double a[][], double b[], boolean used_raws[], Position pivot_element) {
@@ -85,7 +89,7 @@ class EnergyValues {
         boolean[] used_columns = new boolean[size];
         boolean[] used_raws = new boolean[size];
         for (int step = 0; step < size; ++step) {
-            Position pivot_element = SelectPivotElement(a, used_raws, used_columns);
+            Position pivot_element = SelectPivotElement(a, step);
             SwapLines(a, b, used_raws, pivot_element);
             ProcessPivotElement(a, b, pivot_element);
             MarkPivotElementUsed(pivot_element, used_raws, used_columns);
