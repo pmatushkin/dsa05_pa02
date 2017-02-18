@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 class Equation {
@@ -74,8 +75,21 @@ class EnergyValues {
         pivot.row = pivot.column;
     }
 
-    static void ProcessPivotElement(double a[][], double b[], Position pivot_element) {
+    static void ProcessPivotElement(double a[][], double b[], Position pivot) {
         // Write your code here
+        int size = a.length;
+        double pivot_value = a[pivot.row][pivot.column];
+
+        for (int i = pivot.row + 1; i < size; i++) {
+            double scale = a[i][pivot.column] / pivot_value;
+
+            // Subtract row from rows below to make other entries in pivot column equal to 0
+            for (int j = pivot.column; j < size; j++) {
+                a[i][j] -= a[pivot.row][j] * scale;
+            }
+
+            b[i] -= b[pivot.row] * scale;
+        }
     }
 
     static void MarkPivotElementUsed(Position pivot_element, boolean used_rows[], boolean used_columns[]) {
@@ -95,6 +109,20 @@ class EnergyValues {
             SwapLines(a, b, used_rows, pivot_element);
             ProcessPivotElement(a, b, pivot_element);
             MarkPivotElementUsed(pivot_element, used_rows, used_columns);
+        }
+
+        // build the answer starting from the last row
+        // now in every row i pivot element is at a[i][i]
+        for (int i = size - 1; i >= 0; i--) {
+
+            for (int j = i + 1; j < size; j++) {
+                // at this step we know the solutions for the rows below i
+                // so we use them to reduce the solutions for the row i
+                b[i] -= b[j] * a[i][j];
+            }
+
+            // scale down the solution for the row i by the value of the pivot
+            b[i] /= a[i][i];
         }
 
         return b;
