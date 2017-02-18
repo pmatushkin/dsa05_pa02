@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 class Equation {
@@ -41,7 +40,10 @@ class EnergyValues {
         // This algorithm selects the first free element.
         // You'll need to improve it to pass the problem.
         int free = -1;
-        for (int i = column; i < a.length; i++) {
+        int size = a.length;
+
+        // Take leftmost non-zero entry
+        for (int i = column; i < size; i++) {
             if (a[i][column] != 0) {
                 free = i;
 
@@ -52,24 +54,24 @@ class EnergyValues {
         return new Position(column, free);
     }
 
-    static void SwapLines(double a[][], double b[], boolean used_rows[], Position pivot_element) {
+    static void SwapLines(double a[][], double b[], boolean used_rows[], Position pivot) {
         int size = a.length;
 
         for (int column = 0; column < size; ++column) {
-            double tmpa = a[pivot_element.column][column];
-            a[pivot_element.column][column] = a[pivot_element.row][column];
-            a[pivot_element.row][column] = tmpa;
+            double tmpa = a[pivot.column][column];
+            a[pivot.column][column] = a[pivot.row][column];
+            a[pivot.row][column] = tmpa;
         }
 
-        double tmpb = b[pivot_element.column];
-        b[pivot_element.column] = b[pivot_element.row];
-        b[pivot_element.row] = tmpb;
+        double tmpb = b[pivot.column];
+        b[pivot.column] = b[pivot.row];
+        b[pivot.row] = tmpb;
 
-        boolean tmpu = used_rows[pivot_element.column];
-        used_rows[pivot_element.column] = used_rows[pivot_element.row];
-        used_rows[pivot_element.row] = tmpu;
+        boolean tmpu = used_rows[pivot.column];
+        used_rows[pivot.column] = used_rows[pivot.row];
+        used_rows[pivot.row] = tmpu;
 
-        pivot_element.row = pivot_element.column;
+        pivot.row = pivot.column;
     }
 
     static void ProcessPivotElement(double a[][], double b[], Position pivot_element) {
